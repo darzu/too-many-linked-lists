@@ -1,25 +1,27 @@
 use std::mem;
 
-pub struct List {
-    head: Option<Box<Node>>,
+// type Link<T> = Option<Box<Node<T>>>;
+
+pub struct List<T> {
+    head: Option<Box<Node<T>>>,
 }
-struct Node {
-    elem: i32,
-    next: Option<Box<Node>>,
+struct Node<T> {
+    elem: T,
+    next: Option<Box<Node<T>>>,
 }
 
-impl List {
+impl<T> List<T> {
     pub fn new() -> Self {
         List { head: None }
     }
-    pub fn push(&mut self, elem: i32) {
+    pub fn push(&mut self, elem: T) {
         let new_node = Box::new(Node {
             elem: elem,
             next: self.head.take(),
         });
         self.head = Some(new_node)
     }
-    pub fn pop(&mut self) -> Option<i32> {
+    pub fn pop(&mut self) -> Option<T> {
         self.head.take().map(|node| {
             self.head = node.next;
             node.elem
@@ -27,7 +29,7 @@ impl List {
     }
 }
 
-impl Drop for List {
+impl<T> Drop for List<T> {
     fn drop(&mut self) {
         let mut cur_link = self.head.take();
         // `while let` == "do this thing until this pattern doesn't match"
